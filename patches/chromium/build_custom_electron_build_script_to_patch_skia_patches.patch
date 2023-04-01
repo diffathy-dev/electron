@@ -1,0 +1,55 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Suchul Shin <eva317@gmail.com>
+Date: Sat, 1 Apr 2023 23:34:14 +0900
+Subject: build: custom Electron build script to patch skia patches
+
+Skia source code is not supported by the Electron's default patch system because Skia source code is not maanged by git in the Electron and Chromium project. So this build script copy and overwrite the patched source code to the original source code, and then run the build shell command.
+
+diff --git a/build_custom_testing.py b/build_custom_testing.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..62537679a9759060ed18691b82fad546d5c659f7
+--- /dev/null
++++ b/build_custom_testing.py
+@@ -0,0 +1,42 @@
++# -------------------------------------------------------
++# Skia 소스 코드 패치는 Electron patch 시스템에서 지원하지 않음
++# 이러한 패치는 직접 파일을 복사하는 방식으로 처리
++# !! Electron 빌드는 반드시 이 스크립트로 수행해야 함
++# -------------------------------------------------------
++
++import os
++import shutil
++from subprocess import Popen, PIPE, STDOUT
++import sys
++import time
++
++# 파일 경로 설정
++src_file = './electron/patches_custom/skia/SkTextFormatParams.h'
++dst_file = './third_party/skia/src/core/SkTextFormatParams.h'
++
++# 파일이 있는지 확인
++if os.path.exists(src_file):
++    # 파일 덮어쓰기
++    shutil.copy(src_file, dst_file)
++else:
++    # 파일이 없을 경우 에러 메시지 출력 후 프로그램 종료
++    print("Custom patch file doesn't exist: SkTextFormatParams.h")
++    exit(1)
++
++# 쉘 명령 실행
++shell_command = 'ninja -C out/Testing electron'
++process = Popen(shell_command.split(), stdout=PIPE, stderr=STDOUT)
++
++# ANSI escape 코드로 커서를 처음으로 이동하고 줄을 지우기
++# CLEAR_LINE = '\033[K'
++# RESET_CURSOR = '\033[1G'
++
++# 로그 출력
++for line in iter(process.stdout.readline, b''):
++    print(line.decode('utf-8').rstrip())
++    # sys.stdout.write(RESET_CURSOR + CLEAR_LINE)
++    # sys.stdout.write(line.decode('utf-8').rstrip())
++    # sys.stdout.flush()
++
++# 프로세스 완료 대기
++process.communicate()

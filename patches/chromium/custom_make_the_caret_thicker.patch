@@ -1,0 +1,22 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Suchul Shin <eva317@gmail.com>
+Date: Fri, 31 Mar 2023 23:13:13 +0900
+Subject: custom: make the caret thicker
+
+This patch is for customizing Electron and Chromium for our application.
+The original caret of Chromium is too thin for our purpose.
+The original caret thickness is 1.0f, and we change it to 1.5f.
+
+diff --git a/third_party/blink/renderer/core/frame/local_frame_view.cc b/third_party/blink/renderer/core/frame/local_frame_view.cc
+index 021700f6afcba1b65a3e0f4035fe06c65f56efd5..20af1ec345c240180797fb41c757ad95418001be 100644
+--- a/third_party/blink/renderer/core/frame/local_frame_view.cc
++++ b/third_party/blink/renderer/core/frame/local_frame_view.cc
+@@ -4718,7 +4718,7 @@ void LocalFrameView::MapLocalToRemoteMainFrame(
+ 
+ LayoutUnit LocalFrameView::CaretWidth() const {
+   return LayoutUnit(std::max<float>(
+-      1.0f, GetChromeClient()->WindowToViewportScalar(&GetFrame(), 1.0f)));
++      1.5f, GetChromeClient()->WindowToViewportScalar(&GetFrame(), 1.5f))); // by Suchul Shin, 2023-03-29, 1.0f -> 1.5f
+ }
+ 
+ void LocalFrameView::RegisterTapEvent(Element* target) {
