@@ -1,0 +1,22 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Suchul Shin <eva317@gmail.com>
+Date: Mon, 26 Jun 2023 23:30:22 +0900
+Subject: custom: adjust position of strikethrough line
+
+In the original version, the strokethrough line is too high,
+especially for English characters.
+Adjusted the top position from ascent * 0.67 to ascent * 0.77.
+
+diff --git a/third_party/blink/renderer/core/paint/text_decoration_info.cc b/third_party/blink/renderer/core/paint/text_decoration_info.cc
+index 17e2a0bc2d510171068f31188f36408fa9f6bfe1..dcd327e80da2ae9263e9d8cae5b49b8873aebff2 100644
+--- a/third_party/blink/renderer/core/paint/text_decoration_info.cc
++++ b/third_party/blink/renderer/core/paint/text_decoration_info.cc
+@@ -506,7 +506,7 @@ void TextDecorationInfo::SetLineThroughLineData() {
+   // For increased line thickness, the line-through decoration needs to grow
+   // in both directions from its origin, subtract half the thickness to keep
+   // it centered at the same origin.
+-  const float line_through_offset = 2 * Ascent() / 3 - ResolvedThickness() / 2;
++  const float line_through_offset = Ascent() * 0.77 - ResolvedThickness() / 2;
+   SetLineData(TextDecorationLine::kLineThrough, line_through_offset);
+ }
+ 
