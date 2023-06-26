@@ -1,0 +1,28 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Suchul Shin <eva317@gmail.com>
+Date: Mon, 26 Jun 2023 23:38:48 +0900
+Subject: custom: make ime composition underline color settable using css
+ property
+
+The current IME composition underline's color is always black or
+the same as that of text. This is too ugly when using the caret
+with changed color. Enforce to follow the CSS's text stroke color
+because this property is not used in PenCake especially in the
+text editor.
+
+diff --git a/third_party/blink/renderer/core/paint/document_marker_painter.cc b/third_party/blink/renderer/core/paint/document_marker_painter.cc
+index fb6362db22055b9d23046247e3336d2b8b2988e9..122774d96c9b6cf0313eb441cef4176e8f92d5fb 100644
+--- a/third_party/blink/renderer/core/paint/document_marker_painter.cc
++++ b/third_party/blink/renderer/core/paint/document_marker_painter.cc
+@@ -167,10 +167,7 @@ void DocumentMarkerPainter::PaintStyleableMarkerUnderline(
+       line_thickness = thick_line_thickness;
+   }
+ 
+-  Color marker_color =
+-      (marker.UseTextColor() || in_dark_mode)
+-          ? style.VisitedDependentColor(GetCSSPropertyWebkitTextFillColor())
+-          : marker.UnderlineColor();
++  Color marker_color = style.VisitedDependentColor(GetCSSPropertyWebkitTextStrokeColor()); // Only for diffathy, by Suchul Shin, 2023-04-02
+   if (marker.UnderlineStyle() !=
+       ui::mojom::ImeTextSpanUnderlineStyle::kSquiggle) {
+     context.SetStrokeColor(marker_color);
