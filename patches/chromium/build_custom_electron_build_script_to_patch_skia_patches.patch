@@ -1,6 +1,6 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Suchul Shin <eva317@gmail.com>
-Date: Sat, 1 Apr 2023 23:34:14 +0900
+Date: Mon, 26 Jun 2023 23:05:09 +0900
 Subject: build: custom Electron build script to patch skia patches
 
 Skia source code is not supported by the Electron's default patch system because Skia source code is not maanged by git in the Electron and Chromium project. So this build script copy and overwrite the patched source code to the original source code, and then run the build shell command.

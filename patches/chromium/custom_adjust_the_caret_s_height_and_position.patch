@@ -1,0 +1,37 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Suchul Shin <eva317@gmail.com>
+Date: Mon, 26 Jun 2023 23:07:05 +0900
+Subject: custom: adjust the caret's height and position
+
+The original caret's height is the same as that of the displayed font.
+The fonts used in PenCake are all height-enlarged for the natural line spacing.
+For this reason, the caret is too long and ugly.
+In this patch, we adjusted the caret's height and its position to be natural.
+
+diff --git a/third_party/blink/renderer/core/layout/layout_box_model_object.cc b/third_party/blink/renderer/core/layout/layout_box_model_object.cc
+index a7b8035af609ca9444e3b5324b7847c2f796b705..4f39bedc341e8f4fc9f838a9ce2b9fc41006c54c 100644
+--- a/third_party/blink/renderer/core/layout/layout_box_model_object.cc
++++ b/third_party/blink/renderer/core/layout/layout_box_model_object.cc
+@@ -1255,6 +1255,8 @@ LayoutRect LayoutBoxModelObject::LocalCaretRectForEmptyElement(
+                  kPositionOfInteriorLineBoxes) -
+       height;
+   LayoutUnit y = PaddingTop() + BorderTop() + (vertical_space / 2);
++  y += height * 0.12;
++  height = LayoutUnit::FromDoubleRound(height * 0.79);
+   return current_style.IsHorizontalWritingMode()
+              ? LayoutRect(x, y, caret_width, height)
+              : LayoutRect(y, x, height, caret_width);
+diff --git a/third_party/blink/renderer/core/layout/ng/inline/ng_caret_rect.cc b/third_party/blink/renderer/core/layout/ng/inline/ng_caret_rect.cc
+index fef7b5bb85056698bdd61773068f3876f406af8f..11e46e97c65c57029c9bb9f9b9fdee50f47134c2 100644
+--- a/third_party/blink/renderer/core/layout/ng/inline/ng_caret_rect.cc
++++ b/third_party/blink/renderer/core/layout/ng/inline/ng_caret_rect.cc
+@@ -144,7 +144,8 @@ PhysicalRect ComputeLocalCaretRectAtTextOffset(const NGInlineCursor& cursor,
+     caret_location =
+         text_combine->AdjustOffsetForLocalCaretRect(caret_location);
+   }
+-  const PhysicalSize caret_size(caret_width, caret_height);
++  const PhysicalSize caret_size(caret_width, LayoutUnit::FromDoubleRound(caret_height * 0.79));
++  caret_location.top += caret_height * 0.12; // by Suchul Shin, 2023-06-26, Adjust caret height and position
+ 
+   const NGPhysicalBoxFragment& fragment = cursor.ContainerFragment();
+   NGInlineCursor line_box(cursor);

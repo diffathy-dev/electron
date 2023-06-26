@@ -1,6 +1,6 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Suchul Shin <eva317@gmail.com>
-Date: Fri, 31 Mar 2023 23:13:13 +0900
+Date: Mon, 26 Jun 2023 23:03:36 +0900
 Subject: custom: make the caret thicker
 
 This patch is for customizing Electron and Chromium for our application.
