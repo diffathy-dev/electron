@@ -20,8 +20,8 @@ static const SkScalar kStdFakeBoldInterpKeys[] = {
     SK_Scalar1 * 36,
 };
 static const SkScalar kStdFakeBoldInterpValues[] = {
-    SK_Scalar1 / 14,
-    SK_Scalar1 / 18.67,
+    SK_Scalar1 / 24,
+    SK_Scalar1 / 32,
 };
 static_assert(std::size(kStdFakeBoldInterpKeys) ==
                   std::size(kStdFakeBoldInterpValues),
